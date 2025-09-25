@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Media from "@/components/Media";
+// import Media from "@/components/Media";
 import { useMediaStore } from "@/Store/upload";
 
 const years = [2024, 2023, 2022, 2021, 2020];
@@ -48,7 +48,7 @@ function Gallery() {
             <DialogHeader>
               <DialogTitle>Share Your Memories</DialogTitle>
             </DialogHeader>
-            <Media />
+            {/* <Media /> */}
           </DialogContent>
         </Dialog>
       </div>
