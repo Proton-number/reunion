@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { ChevronRight, Upload } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -28,13 +28,15 @@ const PHOTOS_BY_YEAR = {
 function Gallery() {
   const { media, fetchMediaByYear } = useMediaStore();
 
-  useEffect(() => {
-    // Fetch media for each year present in PHOTOS_BY_YEAR
+  const fetchAllYears = useCallback(() => {
     Object.keys(PHOTOS_BY_YEAR).forEach((year) => {
       fetchMediaByYear(Number(year));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchMediaByYear]); // Remove photosByYear from dependencies
+  }, [fetchMediaByYear]);
+
+  useEffect(() => {
+    fetchAllYears();
+  }, [fetchAllYears]);
 
   return (
     <div className="p-10 max-w-10xl mx-auto">
