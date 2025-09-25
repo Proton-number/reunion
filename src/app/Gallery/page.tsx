@@ -17,21 +17,24 @@ import {
 import Media from "@/components/Media";
 import { useMediaStore } from "@/Store/upload";
 
+// Move photosByYear outside the component and make it constant
+const PHOTOS_BY_YEAR = {
+  2024: [],
+  2023: [],
+  2021: [],
+  2020: [],
+} as const;
+
 function Gallery() {
-  const photosByYear: Record<number, string[]> = {
-    2024: [],
-    2023: [],
-    2021: [],
-    2020: [],
-  };
   const { media, fetchMediaByYear } = useMediaStore();
 
   useEffect(() => {
-    // Fetch media for each year present in photosByYear
-    Object.keys(photosByYear).forEach((year) => {
+    // Fetch media for each year present in PHOTOS_BY_YEAR
+    Object.keys(PHOTOS_BY_YEAR).forEach((year) => {
       fetchMediaByYear(Number(year));
     });
-  }, [fetchMediaByYear, photosByYear]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchMediaByYear]); // Remove photosByYear from dependencies
 
   return (
     <div className="p-10 max-w-10xl mx-auto">
@@ -59,7 +62,7 @@ function Gallery() {
         </Dialog>
       </div>
       <div className="pt-15 ">
-        {Object.keys(photosByYear) // Get years
+        {Object.keys(PHOTOS_BY_YEAR) // Get years
           .sort((a, b) => Number(b) - Number(a)) // Sort years descending
           .map((year) => (
             <div key={year} className="mb-12">
