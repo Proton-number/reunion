@@ -31,7 +31,7 @@ function Gallery() {
     Object.keys(photosByYear).forEach((year) => {
       fetchMediaByYear(Number(year));
     });
-  }, [fetchMediaByYear]);
+  }, [fetchMediaByYear, photosByYear]);
 
   return (
     <div className="p-10 max-w-10xl mx-auto">
