@@ -17,15 +17,16 @@ import {
 import Media from "@/components/Media";
 import { useMediaStore } from "@/Store/upload";
 
+const years = [2024, 2023, 2022, 2021, 2020];
 function Gallery() {
   const { media, fetchMediaByYear } = useMediaStore();
-  const years = [2024, 2023, 2022, 2021, 2020];
 
   useEffect(() => {
     years.forEach((year) => {
       fetchMediaByYear(year);
     });
-  }, []); // Removed fetchMediaByYear from dependencies to prevent infinite re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="p-10 max-w-10xl mx-auto">
