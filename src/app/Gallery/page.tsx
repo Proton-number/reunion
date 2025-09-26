@@ -17,7 +17,7 @@ import {
 import Media from "@/components/Media";
 import { useMediaStore } from "@/Store/upload";
 
-const years = [2024, 2023, 2022, 2021, 2020];
+const years = [2024, 2023, 2021, 2020];
 function Gallery() {
   const { media, fetchMediaByYear } = useMediaStore();
 
@@ -101,7 +101,7 @@ function Gallery() {
                           <video
                             controls
                             src={item.file_url}
-                            className="object-cover w-full h-full aspect-square"
+                            className="object-cover w-full h-full aspect-square hover:scale-105 transition-transform duration-200"
                             style={{ background: "black" }}
                           />
                         )}
