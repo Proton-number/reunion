@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Select,
   SelectContent,
@@ -10,10 +11,15 @@ import {
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { UploadCloud } from "lucide-react";
-import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
 import { useMediaStore } from "@/Store/upload";
 import heic2any from "heic2any";
+
+// Dynamically import FileUploader (disable SSR)
+const FileUploader = dynamic(
+  () => import("react-drag-drop-files").then((mod) => mod.FileUploader),
+  { ssr: false }
+);
 
 export default function Media() {
   const [file, setFile] = useState<File | File[] | null>(null);
@@ -33,7 +39,6 @@ export default function Media() {
           quality: 0.7,
         });
 
-        // Handle both Blob and Blob[] cases
         const blob = Array.isArray(result) ? result[0] : result;
 
         return new File([blob], file.name.replace(/\.heic$/i, ".jpg"), {
@@ -41,11 +46,9 @@ export default function Media() {
         });
       } catch (error) {
         console.error("Error converting HEIC to JPG:", error);
-        return file; // fallback to original file
+        return file;
       }
     }
-
-    // If not HEIC, return original file untouched
     return file;
   };
 
@@ -82,6 +85,7 @@ export default function Media() {
   };
 
   const fileTypes = ["JPG", "PNG", "GIF", "MP4", "MOV", "HEIC"];
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -97,6 +101,7 @@ export default function Media() {
             <SelectItem value="2020">2020</SelectItem>
           </SelectContent>
         </Select>
+
         {/* Upload Box */}
         <FileUploader
           handleChange={handleChange}
@@ -116,10 +121,10 @@ export default function Media() {
 
       <div>
         {/* Preview */}
-        {file && (
+        {typeof window !== "undefined" && file && (
           <div className="mt-2">
             <h4 className="font-medium text-sm mb-1">Preview:</h4>
-            {Array.isArray(file) ? ( // Check if multiple files
+            {Array.isArray(file) ? (
               file.map((f, idx) => (
                 <div key={idx} className="mb-2">
                   {f.type.startsWith("image/") ? (
