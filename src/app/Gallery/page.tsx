@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronRight, Upload } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -14,19 +14,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Media from "@/components/Media";
+import dynamic from "next/dynamic";
 import { useMediaStore } from "@/Store/upload";
 
+// Dynamically import Media component to avoid SSR issues
+const Media = dynamic(() => import("@/components/Media"), {
+  ssr: false,
+  loading: () => <div className="p-4">Loading upload form...</div>,
+});
+
 const years = [2024, 2023, 2021, 2020];
+
 function Gallery() {
+  const [isClient, setIsClient] = useState(false);
   const { media, fetchMediaByYear } = useMediaStore();
 
   useEffect(() => {
+    setIsClient(true);
+
+    // Fetch media after component mounts on client
     years.forEach((year) => {
       fetchMediaByYear(year);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchMediaByYear]);
 
   return (
     <div className="p-10 max-w-10xl mx-auto">
@@ -37,20 +47,22 @@ function Gallery() {
             A collection of memorable moments from our annual reunions.
           </p>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="cursor-pointer">
-              <Upload />
-              Upload New Photos
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Share Your Memories</DialogTitle>
-            </DialogHeader>
-            <Media />
-          </DialogContent>
-        </Dialog>
+        {isClient && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="cursor-pointer">
+                <Upload />
+                Upload New Photos
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Share Your Memories</DialogTitle>
+              </DialogHeader>
+              <Media />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <div className="pt-15">
@@ -69,7 +81,7 @@ function Gallery() {
 
             {/* Cards for images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-              {!media[year] || media[year].length === 0
+              {!isClient || !media[year] || media[year].length === 0
                 ? // Show skeletons while loading or if no media
                   Array.from({ length: 4 }).map((_, idx) => (
                     <Card
